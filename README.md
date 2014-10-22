@@ -6,7 +6,7 @@ This is the repository for the development of the phpBB Camo SSL Image Proxy Ext
 You can install this on the latest release of phpBB 3.1 by following the steps below:
 
 1. In the `ext` directory of your phpBB board, create a new directory named `phpbb` (if it does not already exist) and navigate to it
-1. git clone git@github.com:phpbb-extensions/camo-ssl-image-proxy.git
+1. `git clone git@github.com:phpbb-extensions/camo-ssl-image-proxy.git`
 1. Navigate in the ACP to `Customise -> Manage extensions`.
 1. Look for `Camo SSL Image Proxy` under the Disabled Extensions list, and click its `Enable` link.
 
