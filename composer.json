@@ -1,0 +1,38 @@
+{
+	"name": "phpbb/camosslimageproxy",
+	"type": "phpbb-extension",
+	"description": "Rewrites image URLs to point to an asset server.",
+	"homepage": "https://www.phpbb.com/",
+	"version": "1.0.1",
+	"time": "2013-09-06 14:22:00",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Patrick Webster",
+			"username": "Noxwizard",
+			"email": "noxwizard@phpbb.com",
+			"homepage": "https://www.phpbb.com",
+			"role": "Developer"
+		},
+		{
+			"name": "phpBB Website Team",
+			"email": "website@phpbb.com",
+			"homepage": "https://www.phpbb.com"
+		},
+		{
+			"name": "Michael Cullum",
+			"username": "MichaelC",
+			"email": "michael@phpbb.com",
+			"homepage": "https://www.phpbb.com"
+		},
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"extra": {
+		"display-name": "phpBB 3.1 SSL Asset Rewriting Extension",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.1.*@dev"
+		}
+	}
+}

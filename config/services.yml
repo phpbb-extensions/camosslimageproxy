@@ -1,0 +1,5 @@
+services:
+    phpbb.camosslimageproxy.listener:
+        class: phpbb\camosslimageproxy\event\listener
+        tags:
+            - { name: event.listener }
