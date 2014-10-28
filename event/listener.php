@@ -71,7 +71,7 @@ class listener implements EventSubscriberInterface
 		// Viewtopic
 		if (isset($tpldata['postrow']))
 		{
-			foreach ($tpldata['postrow'] as $index => &$postrow)
+			foreach ($tpldata['postrow'] as &$postrow)
 			{
 				$this->rewrite_images($postrow, 'MESSAGE');
 				$this->rewrite_images($postrow, 'SIGNATURE');
@@ -93,7 +93,7 @@ class listener implements EventSubscriberInterface
 		// UCP - PM - Message history, MCP - Reported Post - Topic Review
 		if (isset($tpldata['topic_review_row']))
 		{
-			foreach ($tpldata['topic_review_row'] as $index => &$topic_review_row)
+			foreach ($tpldata['topic_review_row'] as &$topic_review_row)
 			{
 				$this->rewrite_images($topic_review_row, 'MESSAGE');
 			}
@@ -102,7 +102,7 @@ class listener implements EventSubscriberInterface
 		// UCP - PM - Message history (Sent messages)
 		if (isset($tpldata['history_row']))
 		{
-			foreach ($tpldata['history_row'] as $index => &$history_row)
+			foreach ($tpldata['history_row'] as &$history_row)
 			{
 				$this->rewrite_images($history_row, 'MESSAGE');
 			}
@@ -111,7 +111,7 @@ class listener implements EventSubscriberInterface
 		// Search results
 		if (isset($tpldata['searchresults']))
 		{
-			foreach ($tpldata['searchresults'] as $index => &$search_results)
+			foreach ($tpldata['searchresults'] as &$search_results)
 			{
 				$this->rewrite_images($search_results, 'MESSAGE');
 			}
@@ -120,7 +120,7 @@ class listener implements EventSubscriberInterface
 		// Notifications - Nav
 		if (isset($tpldata['notifications']))
 		{
-			foreach ($tpldata['notifications'] as $index => &$notification)
+			foreach ($tpldata['notifications'] as &$notification)
 			{
 				$this->rewrite_images($notification, 'AVATAR');
 			}
@@ -129,7 +129,7 @@ class listener implements EventSubscriberInterface
 		// Notifications - UCP
 		if (isset($tpldata['notification_list']))
 		{
-			foreach ($tpldata['notification_list'] as $index => &$notification)
+			foreach ($tpldata['notification_list'] as &$notification)
 			{
 				$this->rewrite_images($notification, 'AVATAR');
 			}
