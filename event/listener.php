@@ -47,7 +47,7 @@ class listener implements EventSubscriberInterface
 					else
 					{
 						$digest = hash_hmac('sha1', $url, CAMO_KEY);
-						$object[$key] = str_replace($url, 'https://' . ASSETS_DOMAIN . '/' . $digest . '/' . bin2hex($url), $object[$key]);
+						$object[$key] = str_replace('src="' . $url, 'src="https://' . ASSETS_DOMAIN . '/' . $digest . '/' . bin2hex($url), $object[$key]);
 					}
 				}
 			}
