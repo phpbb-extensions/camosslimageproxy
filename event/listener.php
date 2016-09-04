@@ -40,7 +40,7 @@ class listener implements EventSubscriberInterface
 				foreach ($matches[1] as $url)
 				{
 					// Don't rewrite requests for this site
-					if (stripos($url, SITEDOMAIN) !== false)
+					if (stripos($url, SITE_DOMAIN) !== false)
 					{
 						$object[$key] = preg_replace('#http:#', 'https:', $object[$key]);
 					}
