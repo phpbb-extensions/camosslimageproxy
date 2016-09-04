@@ -35,19 +35,19 @@ class listener implements EventSubscriberInterface
 	{
 		if (!empty($object[$key]))
 		{
-			if (preg_match_all('#<img src="(http://[^"]+)" [^/]+ />#', $object[$key], $matches))
+			if (preg_match_all('#<img[^/]* src="(http://[^"]+)" [^/]+ />#', $object[$key], $matches))
 			{
 				foreach ($matches[1] as $url)
 				{
 					// Don't rewrite requests for this site
-					if (stripos($url, SITEDOMAIN) !== false)
+					if (stripos($url, SITE_DOMAIN) !== false)
 					{
 						$object[$key] = preg_replace('#http:#', 'https:', $object[$key]);
 					}
 					else
 					{
 						$digest = hash_hmac('sha1', $url, CAMO_KEY);
-						$object[$key] = str_replace($url, 'https://' . ASSETS_DOMAIN . '/' . $digest . '/' . bin2hex($url), $object[$key]);
+						$object[$key] = str_replace('src="' . $url, 'src="https://' . ASSETS_DOMAIN . '/' . $digest . '/' . bin2hex($url), $object[$key]);
 					}
 				}
 			}
