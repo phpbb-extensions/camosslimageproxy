@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "Rewrites image URLs to point to an asset server.",
 	"homepage": "https://www.phpbb.com/",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"time": "2013-09-06 14:22:00",
 	"license": "GPL-2.0",
 	"authors": [
@@ -22,6 +22,11 @@
 			"name": "Michael Cullum",
 			"email": "michael@phpbb.com",
 			"homepage": "https://www.phpbb.com"
+		},
+                {
+			"name": "Mike Morrin",
+			"email": "v12mike@ingenious.co.nz"
+			"role": "Developer"
 		}
 	],
 	"require": {
