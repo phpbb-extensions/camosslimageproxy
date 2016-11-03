@@ -1,1 +1,100 @@
+<!-- INCLUDE overall_header.html -->
 
+<h1>{L_CSIP_TITLE}</h1>
+<p>{L_CSIP_VERSION} {CSIP_VERSION}</p>
+
+<!-- IF CSIP_ERROR -->
+	<div class="errorbox"><h3>{L_WARNING}</h3>
+		<p>{CSIP_ERROR}</p>
+	</div>
+<!-- ENDIF -->
+
+<form id="acp_imageredirect" method="post" action="{U_ACTION}">
+	<fieldset>
+		<dl>
+			<dt><label id="camosslimageproxy_enabled" for="camosslimageproxy_enabled">{L_CSIP_ENABLED}</label><br />{L_CSIP_ENABLED_EXPLAIN}</dt>
+			<dd>
+				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="1" <!-- IF ENABLED -->checked="checked"<!-- ENDIF -->/> {L_CSIP_ENABLED} &nbsp;
+				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="0" <!-- IF not ENABLED -->checked="checked"<!-- ENDIF --> /> {L_CSIP_DISABLED}
+			</dd>
+		</dl>
+		<dl>
+			<dt><label id="camosslimageproxy_simplemode" for="camosslimageproxy_simplemode">{L_CSIP_SIMPLE_MODE}</label><br />{L_CSIP_SIMPLE_MODE_EXPLAIN}</dt>
+			<dd>
+				<input type="radio" class="radio" name="camosslimageproxy_simplemode" value="0" <!-- IF not SIMPLE_MODE -->checked="checked"<!-- ENDIF --> /> {L_CSIP_CAMO_MODE}
+				<input type="radio" class="radio" name="camosslimageproxy_simplemode" value="1" <!-- IF SIMPLE_MODE -->checked="checked"<!-- ENDIF -->/> {L_CSIP_SIMPLE_MODE} &nbsp;
+			</dd>
+		</dl>
+		<dl>
+			<dt><label id="camosslimageproxy_proxyaddress" for="camosslimageproxy_proxyaddress">{L_CSIP_PROXY_ADDRESS}</label><br />{L_CSIP_PROXY_ADDRESS_EXPLAIN}</dt>
+			<dd><input type="text" name="camosslimageproxy_proxyaddress" id="camosslimageproxy_proxyaddress" size="50" value="{PROXY_ADDRESS}" /></dd>
+		</dl>
+		<dl>
+			<dt><label id="camosslimageproxy_proxyapikey" for="camosslimageproxy_proxyapikey">{L_CSIP_PROXY_API_KEY}</label><br />{L_CSIP_PROXY_API_KEY_EXPLAIN}</dt>
+			<dd><input type="text" name="camosslimageproxy_proxyapikey" id="camosslimageproxy_proxyapikey" size="20" value="{PROXY_API_KEY}" /></dd>
+		</dl>
+		<p class="submit-buttons">
+			<input class="button2" type="submit" id="submit" name="submit" value="{L_CSIP_SAVE_PROXY}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+		{S_FORM_TOKEN}
+		</p>
+	</fieldset>
+<br />
+
+<p>{L_CSIP_ADD_DOMAIN_EXPLAIN}</p>
+<table cellspacing="1">
+	<thead>
+		<tr>
+			<th>{L_CSIP_DOMAIN}</th>
+			<th>{L_CSIP_SUBDOMAINS}</th>
+			<th>{L_CSIP_ACTION}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- BEGIN directurlrewrites -->
+			<!-- IF directurlrewrites.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<td>{directurlrewrites.DOMAIN}</td>
+				<!-- IF directurlrewrites.SUBDOMAINS == 0 --><td>{L_CSIP_SUBDOMAINS_DISABLED}</td><!-- ELSE --><td>{L_CSIP_SUBDOMAINS_ENABLED}</td><!-- ENDIF -->
+				<td align="center"><input type="submit" name="delete_domain_[{directurlrewrites.DOMAIN_ID}]" value="{L_CSIP_DELETE_DOMAIN}" class="button2"/></td>
+			</tr>
+		<!-- END directurlrewrites -->
+		<!-- IF directurlrewrites.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td><input type="text" name="camosslimageproxy_adddomain" id="camosslimageproxy_adddomain" size="50" value="{ADD_DOMAIN}" /></td>
+			<td><input type="radio" class="radio" name="camosslimageproxy_subdomains" value="1" checked="checked"/> {L_CSIP_SUBDOMAINS_ENABLED} &nbsp;
+				<input type="radio" class="radio" name="camosslimageproxy_subdomains" value="0" /> {L_CSIP_SUBDOMAINS_DISABLED}</td>
+			<td><input class="button2" type="submit" name="add_domain" value="{L_CSIP_ADD_DOMAIN}" /></td>;
+		</tr>
+	</tbody>
+</table>
+<br />
+
+<p>{L_CSIP_ADD_LOCATION_EXPLAIN}</p>
+<table cellspacing="1">
+	<thead>
+		<tr>
+			<th>{L_CSIP_STRUCTURE}</th>
+			<th>{L_CSIP_FIELD}</th>
+			<th>{L_CSIP_LOCATION_COMMENT}</th>
+			<th>{L_ACTION}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- BEGIN camolocations -->
+			<!-- IF camolocations.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<td>{camolocations.LOCATION}</td>
+				<td>{camolocations.FIELD}</td>
+				<td>{camolocations.COMMENT}</td>
+				<!-- IF camolocations.CORE == 0 --><td align="center"><input type="submit" name="delete_location_[{camolocations.LOCATION_ID}]" value="{L_DELETE_LOCATION}" class="button2"/></td><!-- ENDIF -->
+			</tr>
+		<!-- END camolocations -->
+		<!-- IF camolocations.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+				<td><input type="text" name="camosslimageproxy_addlocation" id="camosslimageproxy_addlocation" size="50" value="{CSIP_ADD_LOCATION}" /></td>
+				<td><input type="text" name="camosslimageproxy_addfield" id="camosslimageproxy_addfield" size="50" value="{CSIP_ADD_FIELD}" /></td>
+				<td><input type="text" name="camosslimageproxy_addcomment" id="camosslimageproxy_addcomment" size="50" value="{CSIP_ADD_COMMENT}" /></td>
+				<td><input class="button2" type="submit" name="add_location" value="{L_CSIP_ADD_LOCATION}"></td>
+			</tr>
+	</tbody>
+</table>
+<br />
+</form>
+<!-- INCLUDE overall_footer.html -->
