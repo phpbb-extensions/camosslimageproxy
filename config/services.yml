@@ -1,5 +1,24 @@
 services:
+    phpbb.camosslimageproxy.functions:
+        class: phpbb\camosslimageproxy\core\camosslimageproxy
+        arguments:
+            - @auth
+            - @config
+            - @cache
+            - @content.visibility
+            - @dbal.conn
+            - @dispatcher
+            - @template
+            - @user
+            - %core.root_path%
+            - %core.php_ext%
     phpbb.camosslimageproxy.listener:
         class: phpbb\camosslimageproxy\event\listener
+        arguments:
+            - @config
+            - @dbal.conn
+            - %core.table_prefix%
         tags:
             - { name: event.listener }
+
+
