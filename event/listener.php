@@ -9,9 +9,7 @@
 
 namespace phpbb\camosslimageproxy\event;
 
-define('CAMO_KEY', '');
-define('ASSETS_DOMAIN', '');
-define('SITE_DOMAIN', '');
+define('ONE_MONTH', '2500000'); //seconds (approximately)
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -31,23 +29,39 @@ class listener implements EventSubscriberInterface
 	 * @param	string	$key	The key into the array. The element to rewrite.
 	 * @return	void
 	 */
-	private function rewrite_images(&$object, $key)
+	private function rewrite_images(&$object, $key, $domains)
 	{
 		if (!empty($object[$key]))
 		{
-			if (preg_match_all('#<img[^/]* src="(http://[^"]+)" [^/]+ />#', $object[$key], $matches))
+			if (preg_match_all('#<img [^>]*src="(http://[^"]+)" [^/]+ />#', $object[$key], $matches))
 			{
 				foreach ($matches[1] as $url)
 				{
-					// Don't rewrite requests for this site
-					if (stripos($url, SITE_DOMAIN) !== false)
+					foreach ($domains as $row)
 					{
-						$object[$key] = preg_replace('#http:#', 'https:', $object[$key]);
+						$domain = $row['domain'] . '/' ;
+						$subdomains = $row['subdomains'];
+						$match = stripos($url, $domain);
+						if ($match !== false)
+						{
+							if (($subdomains != 0) || ($match == 7)) // 7 chars in "http://"
+							{
+								// just rewrite http:// to https:// for domains (including this one) that should support it
+								$object[$key] = preg_replace('#http:#', 'https:', $object[$key]);
+								break;
+							}
+						}
 					}
+					// rewite others for  "simple mode" proxy (if so configured)
+					if ($this->config['camosslimageproxy_simplemode'])
+					{
+						$object[$key] = str_replace($url, 'https://' . $this->config['camosslimageproxy_proxyaddress'] . $url, $object[$key]);
+					}
+					//  rewrite url for Camo proxy server
 					else
 					{
-						$digest = hash_hmac('sha1', $url, CAMO_KEY);
-						$object[$key] = str_replace('src="' . $url, 'src="https://' . ASSETS_DOMAIN . '/' . $digest . '/' . bin2hex($url), $object[$key]);
+						$digest = hash_hmac('sha1', $url, $this->config['camosslimageproxy_proxyapikey']);
+						$object[$key] = str_replace($url, 'https://' . $this->config['camosslimageproxy_proxyaddress'] . '/' . $digest . '/' . bin2hex($url), $object[$key]);
 					}
 				}
 			}
@@ -59,80 +73,55 @@ class listener implements EventSubscriberInterface
 		global $request;
 		global $phpbb_container;
 
-		if (!$request->is_secure())
-		{
+		if ($this->config['camosslimageproxy_enabled'] == 0)
 			return;
-		}
 
 		$context = $phpbb_container->get('template_context');
 		$rootref = &$context->get_root_ref();
 		$tpldata = &$context->get_data_ref();
 
-		// Viewtopic
-		if (isset($tpldata['postrow']))
+
+		// get all the domains that are directly remapped
+		// do it here for efficiency
+		$sql = 'SELECT domain, subdomains FROM ' . $this->table_prefix . 'camo_domains';
+		// cache the query for a while 
+		$result = $this->db->sql_query($sql, ONE_MONTH);
+		$domains = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		// get all the fields that need to be patched
+		$sql = 'SELECT location, field FROM ' . $this->table_prefix . 'camo_locations';
+		// cache the query for a while 
+		$result = $this->db->sql_query($sql, ONE_MONTH);
+		$locations = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+		foreach ($locations as $row)
 		{
-			foreach ($tpldata['postrow'] as &$postrow)
+			$location = $row['location'];
+			if ($location == 'headers')
 			{
-				$this->rewrite_images($postrow, 'MESSAGE');
-				$this->rewrite_images($postrow, 'SIGNATURE');
-				$this->rewrite_images($postrow, 'POSTER_AVATAR');
+				// patch header fields
+				$this->rewrite_images($rootref, $row['field'], $domains);
+			}
+			else
+			{
+				// patch all other required fields
+				if (isset($tpldata[$location]))
+				{
+					foreach ($tpldata[$location] as &$tplrow)
+					{
+						$this->rewrite_images($tplrow, $row['field'], $domains);
+					}
+				}
 			}
 		}
+	}
 
-		$this->rewrite_images($rootref, 'AVATAR');				//UCP - Profile - Avatar
-		$this->rewrite_images($rootref, 'SIGNATURE_PREVIEW');	//UCP - Profile - Signature
-		$this->rewrite_images($rootref, 'PREVIEW_MESSAGE');	//UCP - PM - Compose - Message
-		$this->rewrite_images($rootref, 'PREVIEW_SIGNATURE');	//UCP - PM - Compose - Signature
-		$this->rewrite_images($rootref, 'AUTHOR_AVATAR');		//UCP - PM - View - Author avatar
-		$this->rewrite_images($rootref, 'MESSAGE');			//UCP - PM - View - Author message
-		$this->rewrite_images($rootref, 'SIGNATURE');			//UCP - PM - View - Author signature, Memberlist - Profile - Signature
-		$this->rewrite_images($rootref, 'POST_PREVIEW');		//MCP - Reported post
-		$this->rewrite_images($rootref, 'AVATAR_IMG');			//Memberlist - Profile - Avatar
-		$this->rewrite_images($rootref, 'CURRENT_USER_AVATAR');	//Header - Avatar
-
-		// UCP - PM - Message history, MCP - Reported Post - Topic Review
-		if (isset($tpldata['topic_review_row']))
-		{
-			foreach ($tpldata['topic_review_row'] as &$topic_review_row)
-			{
-				$this->rewrite_images($topic_review_row, 'MESSAGE');
-			}
-		}
-
-		// UCP - PM - Message history (Sent messages)
-		if (isset($tpldata['history_row']))
-		{
-			foreach ($tpldata['history_row'] as &$history_row)
-			{
-				$this->rewrite_images($history_row, 'MESSAGE');
-			}
-		}
-
-		// Search results
-		if (isset($tpldata['searchresults']))
-		{
-			foreach ($tpldata['searchresults'] as &$search_results)
-			{
-				$this->rewrite_images($search_results, 'MESSAGE');
-			}
-		}
-
-		// Notifications - Nav
-		if (isset($tpldata['notifications']))
-		{
-			foreach ($tpldata['notifications'] as &$notification)
-			{
-				$this->rewrite_images($notification, 'AVATAR');
-			}
-		}
-
-		// Notifications - UCP
-		if (isset($tpldata['notification_list']))
-		{
-			foreach ($tpldata['notification_list'] as &$notification)
-			{
-				$this->rewrite_images($notification, 'AVATAR');
-			}
-		}
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, $table_prefix)
+	{
+	   $this->config = $config;
+	   $this->db = $db;
+	   $this->table_prefix = $table_prefix;
 	}
 }
