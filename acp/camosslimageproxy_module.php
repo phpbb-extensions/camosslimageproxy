@@ -62,7 +62,7 @@ class camosslimageproxy_module
 		{
 			// deletion of configured domain has been requested
 			$domain_id = array_keys($request->variable('delete_domain_', array(0 => '')));
-			$sql = 'DELETE FROM ' . $table_prefix . 'camo_domains' . 'WHERE domain_id = ' . $domain_id[0];
+			$sql = 'DELETE FROM ' . $table_prefix . 'camo_domains' . ' WHERE domain_id = ' . $domain_id[0];
 			$this->db->sql_query($sql);
 			$this->cache->destroy('sql', $table_prefix . 'camo_domains');
 		}
@@ -70,7 +70,7 @@ class camosslimageproxy_module
 		{
 			// deletion of configured location has been requested
 			$location_id = array_keys($request->variable('delete_location_', array(0 => '')));
-			$sql = 'DELETE FROM ' . $table_prefix . 'camo_locations' . 'WHERE location_id = ' . $location_id[0];
+			$sql = 'DELETE FROM ' . $table_prefix . 'camo_locations' . ' WHERE location_id = ' . $location_id[0];
 			$this->db->sql_query($sql);
 		}
 		elseif ($request->is_set_post('add_domain'))
