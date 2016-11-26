@@ -55,7 +55,8 @@ class listener implements EventSubscriberInterface
 					// rewite others for  "simple mode" proxy (if so configured)
 					if ($this->config['camosslimageproxy_simplemode'])
 					{
-						$object[$key] = str_replace($url, 'https://' . $this->config['camosslimageproxy_proxyaddress'] . $url, $object[$key]);
+						// the substr($url, 7) trims the leading http:// from the url
+						$object[$key] = str_replace($url, 'https://' . $this->config['camosslimageproxy_proxyaddress'] . substr($url, 7) . $this->config['camosslimageproxy_proxyapikey'], $object[$key]);
 					}
 					//  rewrite url for Camo proxy server
 					else
