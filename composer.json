@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "Rewrites image URLs to point to an asset server.",
 	"homepage": "https://www.phpbb.com/",
-	"version": "1.1.0",
-	"time": "2013-09-06 14:22:00",
+	"version": "1.1.1",
+	"time": "2016-11-27 06:05:00",
 	"license": "GPL-2.0",
 	"authors": [
 		{
