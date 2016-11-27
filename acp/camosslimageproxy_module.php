@@ -97,7 +97,7 @@ class camosslimageproxy_module
 
 		// display the list of configured domains
 	   	$sql = 'SELECT domain_id, domain, subdomains FROM ' . $table_prefix . 'camo_domains ';
-		$result = $this->db->sql_query_limit($sql, $this->config['topics_per_page']);
+		$result = $this->db->sql_query_limit($sql, 200);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
@@ -111,7 +111,7 @@ class camosslimageproxy_module
 
 		// display the list of configured locations
 	   	$sql = 'SELECT location_id, location, field, comment, core FROM ' . $table_prefix . 'camo_locations ';
-		$result = $this->db->sql_query_limit($sql, $this->config['topics_per_page']);
+		$result = $this->db->sql_query_limit($sql, 200);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
