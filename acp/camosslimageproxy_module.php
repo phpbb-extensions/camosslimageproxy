@@ -72,6 +72,7 @@ class camosslimageproxy_module
 			$location_id = array_keys($request->variable('delete_location_', array(0 => '')));
 			$sql = 'DELETE FROM ' . $table_prefix . 'camo_locations' . ' WHERE location_id = ' . $location_id[0];
 			$this->db->sql_query($sql);
+			$this->cache->destroy('sql', $table_prefix . 'camo_locations');
 		}
 		elseif ($request->is_set_post('add_domain'))
 		{
@@ -81,7 +82,7 @@ class camosslimageproxy_module
 				'subdomains'	=> $request->variable('camosslimageproxy_subdomains', 1),
 			));
 			$this->db->sql_query($sql);
-			$this->cache->destroy('_camo_domains');
+			$this->cache->destroy('sql', $table_prefix . 'camo_domains');
 		}
 		elseif ($request->is_set_post('add_location'))
 		{
@@ -92,12 +93,13 @@ class camosslimageproxy_module
 				'comment'	=> $request->variable('camosslimageproxy_addcomment', "", true),
 			));
 			$this->db->sql_query($sql);
+			$this->cache->destroy('sql', $table_prefix . 'camo_locations');
 		}
 
 
 		// display the list of configured domains
 	   	$sql = 'SELECT domain_id, domain, subdomains FROM ' . $table_prefix . 'camo_domains ';
-		$result = $this->db->sql_query_limit($sql, 200);
+		$result = $this->db->sql_query_limit($sql, 0);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
@@ -111,7 +113,7 @@ class camosslimageproxy_module
 
 		// display the list of configured locations
 	   	$sql = 'SELECT location_id, location, field, comment, core FROM ' . $table_prefix . 'camo_locations ';
-		$result = $this->db->sql_query_limit($sql, 200);
+		$result = $this->db->sql_query_limit($sql, 0);
 
 		while ($row = $this->db->sql_fetchrow($result))
 		{
