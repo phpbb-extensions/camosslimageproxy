@@ -15,11 +15,6 @@ namespace phpbb\camosslimageproxy\migrations;
 
 class release_1_1_0 extends \phpbb\db\migration\migration
 {
-	public function effectively_installed()
-	{
-		return isset($this->config['camosslimageproxy_version']) && version_compare($this->config['camosslimageproxy_version'], '1.1.0', '>=');
-	}
-
 	static public function depends_on()
 	{
 		return array('\phpbb\db\migration\data\v31x\v312');
@@ -135,12 +130,6 @@ class release_1_1_0 extends \phpbb\db\migration\migration
 			array('location' => 'searchresults','field' => 'MESSAGE','comment' => 'Core','core' => '1'),
 			array('location' => 'notifications','field' => 'AVATAR','comment' => 'Core','core' => '1'),
 			array('location' => 'notification_list','field' => 'AVATAR','comment' => 'Core','core' => '1'),
-			array('location' => 'topicrow','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
-			array('location' => 'topicrow','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
-			array('location' => 'postrow','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
-			array('location' => 'postrow','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
-			array('location' => 'searchresults','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
-			array('location' => 'searchresults','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview Extension','core' => '0'),
 			);
 		$this->db->sql_multi_insert($this->table_prefix.'camo_locations', $initial_data);
 	}
