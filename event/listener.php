@@ -18,7 +18,7 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.page_footer'	=> 'rewrite_assets',
+			'core.page_footer_after'	=> 'rewrite_assets',
 		);
 	}
 
@@ -69,6 +69,48 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
+	/**
+	 * Adds an unhandled insecure link location to the database
+	 *
+	 * @param	string	$key	The template name.
+	 * @param	string	$location	The element name.
+	 * @param	array	$locations	The array containing the 
+	 *  			configured set of locations
+	 * @return	void
+	 */
+	private function unhandled_insecure_link($location, $field, &$locations)
+	{
+		global $cache;
+
+		foreach ($locations as $configured_location)
+		{
+			if (($configured_location['location'] == $location) && ($configured_location['field'] == $field))
+			{
+				// already in the database, ignore it
+				return;
+			}
+		}
+		// not found, so add it to the database
+		$this->user->add_lang('acp/common');
+		$this->user->add_lang_ext('phpbb/camosslimageproxy', 'info_acp_camosslimageproxy');
+		$sql = 'INSERT INTO ' . $this->table_prefix . 'camo_locations' . $this->db->sql_build_array('INSERT', array(
+			'location'	=> $location,
+			'field'		=> $field,
+			'core'		=> 2,
+			'comment'	=> $this->user->lang['CSIP_ADDED_BY_TRAINING'],
+		));
+		$this->db->sql_query($sql);
+		$cache->destroy('sql', $this->table_prefix . 'camo_locations');
+		// refresh the locations array to pick up the one we have just added
+		$sql = 'SELECT location, field, core FROM ' . $this->table_prefix . 'camo_locations';
+		// cache the query for a while 
+		$result = $this->db->sql_query($sql, ONE_MONTH);
+		$locations = $this->db->sql_fetchrowset($result);
+		$this->db->sql_freeresult($result);
+
+
+	}
+
 	public function rewrite_assets($event)
 	{
 		global $request;
@@ -91,7 +133,7 @@ class listener implements EventSubscriberInterface
 		$this->db->sql_freeresult($result);
 
 		// get all the fields that need to be patched
-		$sql = 'SELECT location, field FROM ' . $this->table_prefix . 'camo_locations';
+		$sql = 'SELECT location, field, core FROM ' . $this->table_prefix . 'camo_locations';
 		// cache the query for a while 
 		$result = $this->db->sql_query($sql, ONE_MONTH);
 		$locations = $this->db->sql_fetchrowset($result);
@@ -99,6 +141,11 @@ class listener implements EventSubscriberInterface
 
 		foreach ($locations as $row)
 		{
+			if ($row['core'] == 0)
+			{
+				// this one is disabled
+				continue;
+			}
 			$location = $row['location'];
 			if ($location == 'headers')
 			{
@@ -117,12 +164,38 @@ class listener implements EventSubscriberInterface
 				}
 			}
 		}
+
+		// catch any http:// image links and add to database
+		// only if in 'learning mode' and user is admin
+		if (($this->config['camosslimageproxy_enabled'] == 2) && $this->auth->acl_get('a_'))
+		{
+			foreach ($tpldata as $key=>$object)
+			{
+				foreach ($object as $item)
+				{
+					foreach ($item as $field=>$string)
+					{
+						if (gettype($string) == 'string')
+						{
+							if (preg_match('#<img [^>]*src="http://[^"]+" [^/]+ />#', $string))
+							{
+								// we have found an http:// image link (after rewriting all configured locations)
+								$this->unhandled_insecure_link(($key == '.')?'headers':$key, $field, $locations);
+							}
+						}
+					}
+				}
+			}
+		}
+
 	}
 
-	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, $table_prefix)
+	public function __construct(\phpbb\config\config $config, \phpbb\db\driver\driver_interface $db, $table_prefix, $auth, $user)
 	{
 	   $this->config = $config;
 	   $this->db = $db;
 	   $this->table_prefix = $table_prefix;
+	   $this->auth = $auth;
+	   $this->user = $user;
 	}
 }
