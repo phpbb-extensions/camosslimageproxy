@@ -50,7 +50,14 @@ $lang = array_merge($lang, array(
 	'CSIP_FIELD'					=> 'Field',
 	'CSIP_DELETE_LOCATION'			=> 'Delete Location',
 	'CSIP_ADD_LOCATION'				=> 'Add Location',
-	'CSIP_ADD_LOCATION_EXPLAIN'		=> 'Add template locations which may contain an image URL to be remapped (may be required for some extensions)',
+	'CSIP_ADD_LOCATION_EXPLAIN'		=> 'Add template locations which may contain an image URL to be remapped (may be required for some extensions).  In Training Mode the extension automatically detects insecure image links and adds them to the database each time an admin loads a page.',
+	'CSIP_ENABLE'					=> 'Enable',
+	'CSIP_DISABLE'					=> 'Disable',
+	'CSIP_ENABLED'					=> 'Enabled',
+	'CSIP_DISABLED'					=> 'Disabled',
+	'CSIP_ADDED_BY_TRAINING'		=> 'Added by training',
+	'CSIP_TRAINING_MODE'			=> 'Training Mode',
+	'CSIP_LOCATION_COMMENT'			=> 'Comment',
 	'CSIP_LOCATION_COMMENT'			=> 'Comment',
 
 ));
