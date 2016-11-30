@@ -66,6 +66,22 @@ class camosslimageproxy_module
 			$this->db->sql_query($sql);
 			$this->cache->destroy('sql', $table_prefix . 'camo_domains');
 		}
+		elseif ($request->is_set_post('disable_location_') && $request->variable('disable_location_', array(0 => '')))
+		{
+			// disabling of configured location has been requested
+			$location_id = array_keys($request->variable('disable_location_', array(0 => '')));
+			$sql = 'UPDATE ' . $table_prefix . 'camo_locations SET core=0 WHERE location_id=' . $location_id[0];
+			$this->db->sql_query($sql);
+			$this->cache->destroy('sql', $table_prefix . 'camo_locations');
+		}
+		elseif ($request->is_set_post('enable_location_') && $request->variable('enable_location_', array(0 => '')))
+		{
+			// enabling of configured location has been requested
+			$location_id = array_keys($request->variable('enable_location_', array(0 => '')));
+			$sql = 'UPDATE ' . $table_prefix . 'camo_locations SET core=2 WHERE location_id=' . $location_id[0];
+			$this->db->sql_query($sql);
+			$this->cache->destroy('sql', $table_prefix . 'camo_locations');
+		}
 		elseif ($request->is_set_post('delete_location_') && $request->variable('delete_location_', array(0 => '')))
 		{
 			// deletion of configured location has been requested
@@ -88,8 +104,9 @@ class camosslimageproxy_module
 		{
 			// add a new location to the db
 			$sql = 'INSERT INTO ' . $table_prefix . 'camo_locations' . $this->db->sql_build_array('INSERT', array(
-				'location'		=> $request->variable('camosslimageproxy_addlocation', "", true),
-				'field'	=> $request->variable('camosslimageproxy_addfield', "", true),
+				'location'	=> $request->variable('camosslimageproxy_addlocation', "", true),
+				'field'		=> $request->variable('camosslimageproxy_addfield', "", true),
+				'core'		=> 2,
 				'comment'	=> $request->variable('camosslimageproxy_addcomment', "", true),
 			));
 			$this->db->sql_query($sql);
@@ -129,7 +146,7 @@ class camosslimageproxy_module
 
 		// fill-in the template
 		$template->assign_vars(array(
-			'ENABLED'			=> (!empty($this->config['camosslimageproxy_enabled'])) ? true : false,
+			'ENABLED'			=> $this->config['camosslimageproxy_enabled'],
 			'SIMPLE_MODE'		=> (!empty($this->config['camosslimageproxy_simplemode'])) ? true : false,
 			'PROXY_ADDRESS'		=> (!empty($this->config['camosslimageproxy_proxyaddress'])) ? $this->config['camosslimageproxy_proxyaddress'] : "",
 			'PROXY_API_KEY'		=> (!empty($this->config['camosslimageproxy_proxyapikey'])) ? $this->config['camosslimageproxy_proxyapikey'] : "",
