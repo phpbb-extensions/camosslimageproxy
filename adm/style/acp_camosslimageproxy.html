@@ -9,13 +9,14 @@
 	</div>
 <!-- ENDIF -->
 
-<form id="acp_imageredirect" method="post" action="{U_ACTION}">
+<form id="acp_camoimageproxy" method="post" action="{U_ACTION}">
 	<fieldset>
 		<dl>
 			<dt><label id="camosslimageproxy_enabled" for="camosslimageproxy_enabled">{L_CSIP_ENABLED}</label><br />{L_CSIP_ENABLED_EXPLAIN}</dt>
 			<dd>
-				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="1" <!-- IF ENABLED -->checked="checked"<!-- ENDIF -->/> {L_CSIP_ENABLED} &nbsp;
-				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="0" <!-- IF not ENABLED -->checked="checked"<!-- ENDIF --> /> {L_CSIP_DISABLED}
+				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="0" <!-- IF ENABLED == 0 -->checked="checked"<!-- ENDIF --> /> {L_CSIP_DISABLED} &nbsp;
+				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="1" <!-- IF ENABLED == 1 -->checked="checked"<!-- ENDIF -->/> {L_CSIP_ENABLED} &nbsp;
+				<input type="radio" class="radio" name="camosslimageproxy_enabled" value="2" <!-- IF ENABLED == 2 -->checked="checked"<!-- ENDIF --> /> {L_CSIP_TRAINING_MODE}
 			</dd>
 		</dl>
 		<dl>
@@ -62,7 +63,7 @@
 			<td><input type="text" name="camosslimageproxy_adddomain" id="camosslimageproxy_adddomain" size="50" value="{ADD_DOMAIN}" /></td>
 			<td><input type="radio" class="radio" name="camosslimageproxy_subdomains" value="1" checked="checked"/> {L_CSIP_SUBDOMAINS_ENABLED} &nbsp;
 				<input type="radio" class="radio" name="camosslimageproxy_subdomains" value="0" /> {L_CSIP_SUBDOMAINS_DISABLED}</td>
-			<td><input class="button2" type="submit" name="add_domain" value="{L_CSIP_ADD_DOMAIN}" /></td>;
+			<td><input class="button2" type="submit" name="add_domain" value="{L_CSIP_ADD_DOMAIN}" /></td>
 		</tr>
 	</tbody>
 </table>
@@ -75,7 +76,9 @@
 			<th>{L_CSIP_STRUCTURE}</th>
 			<th>{L_CSIP_FIELD}</th>
 			<th>{L_CSIP_LOCATION_COMMENT}</th>
-			<th>{L_ACTION}</th>
+			<th>{L_STATE}</th>
+			<th>{L_CSIP_ACTION}</th>
+			<th>{L_DELETE}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -84,7 +87,12 @@
 				<td>{camolocations.LOCATION}</td>
 				<td>{camolocations.FIELD}</td>
 				<td>{camolocations.COMMENT}</td>
-				<!-- IF camolocations.CORE == 0 --><td align="center"><input type="submit" name="delete_location_[{camolocations.LOCATION_ID}]" value="{L_DELETE_LOCATION}" class="button2"/></td><!-- ENDIF -->
+				<!-- IF camolocations.CORE == 0 --><td>{L_DISABLED}</td><!-- ELSE --><td>{L_ENABLED}</td><!-- ENDIF -->
+				<!-- IF camolocations.CORE <> 1 -->
+					<!-- IF camolocations.CORE == 0 --><td align="center"><input type="submit" name="enable_location_[{camolocations.LOCATION_ID}]" value="{L_CSIP_ENABLE}" class="button2"/></td><!-- ENDIF -->
+					<!-- IF camolocations.CORE == 2 --><td align="center"><input type="submit" name="disable_location_[{camolocations.LOCATION_ID}]" value="{L_CSIP_DISABLE}" class="button2"/></td><!-- ENDIF -->
+					<td align="center"><input type="submit" name="delete_location_[{camolocations.LOCATION_ID}]" value="{L_CSIP_DELETE_LOCATION}" class="button2"/></td>
+				<!-- ENDIF -->
 			</tr>
 		<!-- END camolocations -->
 		<!-- IF camolocations.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
