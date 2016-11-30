@@ -18,6 +18,8 @@ services:
             - @config
             - @dbal.conn
             - %core.table_prefix%
+            - @auth
+            - @user
         tags:
             - { name: event.listener }
 
