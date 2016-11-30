@@ -86,7 +86,18 @@ class listener implements EventSubscriberInterface
 		{
 			if (($configured_location['location'] == $location) && ($configured_location['field'] == $field))
 			{
-				// already in the database, ignore it
+				// already in the database, re-enable it if disabled, otherwise ignore it
+				if ($configured_location['core'] == 0)
+				{
+					$sql = 'UPDATE ' . $this->table_prefix . 'camo_locations SET core=2 WHERE location_id=' . $configured_location['location_id'];
+					$this->db->sql_query($sql);
+					$cache->destroy('sql', $this->table_prefix . 'camo_locations');
+					// refresh the locations array to pick up the one we have just updated
+					$sql = 'SELECT location, field, core, location_id FROM ' . $this->table_prefix . 'camo_locations';
+					$result = $this->db->sql_query($sql);
+					$locations = $this->db->sql_fetchrowset($result);
+					$this->db->sql_freeresult($result);
+				}
 				return;
 			}
 		}
@@ -102,9 +113,8 @@ class listener implements EventSubscriberInterface
 		$this->db->sql_query($sql);
 		$cache->destroy('sql', $this->table_prefix . 'camo_locations');
 		// refresh the locations array to pick up the one we have just added
-		$sql = 'SELECT location, field, core FROM ' . $this->table_prefix . 'camo_locations';
-		// cache the query for a while 
-		$result = $this->db->sql_query($sql, ONE_MONTH);
+		$sql = 'SELECT location, field, core, location_id FROM ' . $this->table_prefix . 'camo_locations';
+		$result = $this->db->sql_query($sql);
 		$locations = $this->db->sql_fetchrowset($result);
 		$this->db->sql_freeresult($result);
 
@@ -133,7 +143,7 @@ class listener implements EventSubscriberInterface
 		$this->db->sql_freeresult($result);
 
 		// get all the fields that need to be patched
-		$sql = 'SELECT location, field, core FROM ' . $this->table_prefix . 'camo_locations';
+		$sql = 'SELECT location, field, core, location_id FROM ' . $this->table_prefix . 'camo_locations';
 		// cache the query for a while 
 		$result = $this->db->sql_query($sql, ONE_MONTH);
 		$locations = $this->db->sql_fetchrowset($result);
