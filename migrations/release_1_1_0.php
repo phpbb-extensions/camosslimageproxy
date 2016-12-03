@@ -130,6 +130,18 @@ class release_1_1_0 extends \phpbb\db\migration\migration
 			array('location' => 'searchresults','field' => 'MESSAGE','comment' => 'Core','core' => '1'),
 			array('location' => 'notifications','field' => 'AVATAR','comment' => 'Core','core' => '1'),
 			array('location' => 'notification_list','field' => 'AVATAR','comment' => 'Core','core' => '1'),
+			array('location' => 'topicrow','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'topicrow','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'postrow','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'postrow','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'searchresults','field' => 'TOPIC_PREVIEW_FIRST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'searchresults','field' => 'TOPIC_PREVIEW_LAST_AVATAR','comment' => 'Topic Preview extension','core' => '0'),
+			array('location' => 'topicrow','field' => 'LAST_POST_AUTHOR_FULL','comment' => 'Last Post Avatar extension','core' => '0'),
+			array('location' => 'forumrow','field' => 'AVATAR_IMG','comment' => 'Last Post Avatar extension','core' => '0'),
+			array('location' => 'top_five_donors','field' => 'AVATAR','comment' => 'Donations extension','core' => '0'),
+			array('location' => 'last_five_donors','field' => 'AVATAR','comment' => 'Donations extension','core' => '0'),
+			array('location' => 'donorlist','field' => 'AVATAR','comment' => 'Donations extension','core' => '0'),
+			array('location' => 'memberrow','field' => 'AVATAR_IMG','comment' => 'Senkys Avatars on Memberlist extension','core' => '0'),
 			);
 		$this->db->sql_multi_insert($this->table_prefix.'camo_locations', $initial_data);
 	}
