@@ -2,24 +2,24 @@ services:
     phpbb.camosslimageproxy.functions:
         class: phpbb\camosslimageproxy\core\camosslimageproxy
         arguments:
-            - @auth
-            - @config
-            - @cache
-            - @content.visibility
-            - @dbal.conn
-            - @dispatcher
-            - @template
-            - @user
+            - '@auth'
+            - '@config'
+            - '@cache'
+            - '@content.visibility'
+            - '@dbal.conn'
+            - '@dispatcher'
+            - '@template'
+            - '@user'
             - %core.root_path%
             - %core.php_ext%
     phpbb.camosslimageproxy.listener:
         class: phpbb\camosslimageproxy\event\listener
         arguments:
-            - @config
-            - @dbal.conn
+            - '@config'
+            - '@dbal.conn'
             - %core.table_prefix%
-            - @auth
-            - @user
+            - '@auth'
+            - '@user'
         tags:
             - { name: event.listener }
 
