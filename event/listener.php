@@ -10,6 +10,7 @@
 namespace phpbb\camosslimageproxy\event;
 
 define('ONE_MONTH', '2500000'); //seconds (approximately)
+define('REGEX_STRING', '#<img [^>]*src="(http://[^"]+)"[^>]*>#'); //define it once here, in csse it needs adjusting
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -33,7 +34,7 @@ class listener implements EventSubscriberInterface
 	{
 		if (!empty($object[$key]))
 		{
-			if (preg_match_all('#<img [^>]*src="(http://[^"]+)" [^/]+ />#', $object[$key], $matches))
+			if (preg_match_all(REGEX_STRING, $object[$key], $matches))
 			{
 				foreach ($matches[1] as $url)
 				{
@@ -187,7 +188,7 @@ class listener implements EventSubscriberInterface
 					{
 						if (gettype($string) == 'string')
 						{
-							if (preg_match('#<img [^>]*src="http://[^"]+" [^/]+ />#', $string))
+							if (preg_match(REGEX_STRING, $string))
 							{
 								// we have found an http:// image link (after rewriting all configured locations)
 								$this->unhandled_insecure_link(($key == '.')?'headers':$key, $field, $locations);
