@@ -9,6 +9,11 @@ You can install this on the latest release of phpBB 3.1 by following the steps b
 1. `git clone git@github.com:phpbb-extensions/camo-ssl-image-proxy.git`
 1. Navigate in the ACP to `Customise -> Manage extensions`.
 1. Look for `Camo SSL Image Proxy` under the Disabled Extensions list, and click its `Enable` link.
+1. Navigate in the ACP to 'Extensions -> Camo SSL Image Proxy -> Configure'.
+1. Enter the proxy address (without protocol specifier or trailing /) e.g. mydomain.com/camo
+1. Enter the camo API key (as applicable)
+1. Add at least your sites domain(s) to the Directly Mapped Domains list (without protocol specifier or trailing /) e.g. mydomain.com
+1. Ensure that 'Camo Mode' is selected and that 'Image Proxy Enable' is selected
 
 Please note, this requires [Camo](https://github.com/atmos/camo) to have been setup previously.
 
@@ -21,6 +26,5 @@ Please note, this requires [Camo](https://github.com/atmos/camo) to have been se
 
 ## Todo
 
-* Add ACP configurable camo API key
-* Add ACP configurable sites to just change protocol
-* Add ACP configurable camo server domain
+* Add some sort of html tag to the image so that a user can access the original link.
+* Add optional logging facility
