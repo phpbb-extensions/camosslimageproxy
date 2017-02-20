@@ -3,7 +3,7 @@
 This is the repository for the development of the phpBB Camo SSL Image Proxy Extension.
 
 ## Quick Install
-You can install this on the latest release of phpBB 3.2 by following the steps below:
+You can install this on the latest release of phpBB 3.1 or 3.2 by following the steps below:
 
 1. In the `ext` directory of your phpBB board, create a new directory named `phpbb` (if it does not already exist) and navigate to it
 1. `git clone git@github.com:phpbb-extensions/camosslimageproxy.git` or alternatively use `git clone https://github.com/phpbb-extensions/camosslimageproxy.git`
